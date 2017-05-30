@@ -1,6 +1,10 @@
 package cl.blueprintsit.apps.mediaman.launcher;
 
+import cl.blueprintsit.apps.mediaman.IMediaManager;
+import cl.blueprintsit.apps.mediaman.Library;
 import cl.blueprintsit.apps.mediaman.MediaManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.File;
@@ -12,13 +16,19 @@ import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
  */
 public class MediaProcessor extends JPanel {
 
-    public static void main(String[] args) {
-        JFileChooser jfc = new JFileChooser(new File("/Volumes/slash"));
-        jfc.setFileSelectionMode(DIRECTORIES_ONLY);
-        jfc.showDialog(new MediaProcessor(), "Directorio");
+    private static final Logger logger = LoggerFactory.getLogger(MediaProcessor.class);
 
-        File currentDirectory = jfc.getCurrentDirectory();
-        MediaManager mediaManager = new MediaManager();
-        mediaManager.addLibrary(currentDirectory);
+    public static void main(String[] args) {
+        //JFileChooser jfc = new JFileChooser(new File("/Volumes/Andres HD"));
+        //jfc.setFileSelectionMode(DIRECTORIES_ONLY);
+        //jfc.showDialog(new MediaProcessor(), "Directorio");
+
+        //File currentDirectory = jfc.getCurrentDirectory();
+        File currentDirectory = new File("/Volumes/Andres HD");
+        IMediaManager mediaManager = new MediaManager();
+        Library library = mediaManager.createLibrary(currentDirectory);
+        logger.info("The folder " + currentDirectory.getAbsolutePath() + " has been created as library " + library.getName());
+
+        mediaManager.consolidateLibraryDates(library);
     }
 }

@@ -10,11 +10,18 @@ public interface IMediaManager {
     void organizeLibrary(Library library);
 
     /**
-     * This method is responsible for adding a folder as a new Library.
+     * This method is responsible for creating a new Library based on a FileSystem folder.
      *
      * @param directoryLibrary The folder directory where the directory is to be found.
      *
-     * @return A <code>Library</code> object representing the added library.
+     * @return A <code>Library</code> object representing the processed library.
      */
-    public Library addLibrary(File directoryLibrary);
+    public Library createLibrary(File directoryLibrary);
+
+    /**
+     * This method is responsible for consolidating the library dates files and folders.
+     *
+     * @param library The library whose dates are to be consolidated.
+     */
+    public void consolidateLibraryDates(Library library);
 }

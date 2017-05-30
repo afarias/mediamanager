@@ -2,6 +2,8 @@ package cl.blueprintsit.apps.mediaman;
 
 import cl.blueprintsit.utils.parser.NoDateFoundException;
 import cl.blueprintsit.utils.parser.StringParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,10 +13,20 @@ import java.util.List;
 
 public class MediaAnalyser {
 
+    private static final Logger logger = LoggerFactory.getLogger(MediaAnalyser.class);
+
     /* The item to be analized */
     private MediaItem mediaItem;
 
     public MediaAnalyser(MediaItem mediaItem) {
+        this.mediaItem = mediaItem;
+    }
+
+    public MediaItem getMediaItem() {
+        return mediaItem;
+    }
+
+    public void setMediaItem(MediaItem mediaItem) {
         this.mediaItem = mediaItem;
     }
 
@@ -23,16 +35,9 @@ public class MediaAnalyser {
      *
      * @return The date object that represents the release date.
      */
-    public Date getReleaseDate() {
+    public Date getReleaseDate() throws NoDateFoundException {
         File containerFolder = mediaItem.getContainerFolder();
-        StringParser parser = new StringParser();
-        try {
-            StringParser.extractDate(containerFolder.getName());
-        } catch (NoDateFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        return null;  //TODO: Terminar esto
+        return StringParser.extractDate(containerFolder.getName());
     }
 
     /**
@@ -43,7 +48,7 @@ public class MediaAnalyser {
 
         /* The elements contained in the media item are analyzed. They can be a <em>media container</em> (folders with many media item) o just one media item (which can be a folder with many media)... */
         List<MediaItem> foundItems = MediaAnalyser.scanForItems(mediaItem);
-        System.out.println(foundItems.size() + " items found on the Library (" + mediaItem + ")");
+        logger.info(foundItems.size() + " items found on the Library (" + mediaItem + ")");
 
         this.mediaItem.updateItems(foundItems);
     }
@@ -53,7 +58,7 @@ public class MediaAnalyser {
      *
      * @return Una lista de items.
      */
-    private static List<MediaItem> scanForItems(MediaItem mediaItem) {
+    public static List<MediaItem> scanForItems(MediaItem mediaItem) {
 
         /* All the files on the folder are retrieved */
         File containerFolder = mediaItem.getContainerFolder();
@@ -68,14 +73,14 @@ public class MediaAnalyser {
 
         List<MediaItem> foundItems = new ArrayList<MediaItem>();
         for (File file : files) {
-            System.out.println("Item found: " + file.getPath());
+            logger.debug("Item found: " + file.getPath());
 
             /* TODO: By now, every item is a MediaItem */
             MediaItem anItem = new MediaItem(file);
             foundItems.add(anItem);
 
             /* If it is a folder, its contained elements are added */
-            if (file.isDirectory()){
+            if (file.isDirectory()) {
                 foundItems.addAll(scanForItems(anItem));
             }
         }

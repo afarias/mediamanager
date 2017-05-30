@@ -1,5 +1,9 @@
 package cl.blueprintsit.apps.mediaman;
 
+import cl.blueprintsit.utils.parser.NoDateFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +15,9 @@ import java.util.List;
  */
 public class MediaItem {
 
-    /* The phisical place for where this item is located */
+    private static final Logger logger = LoggerFactory.getLogger(MediaItem.class);
+
+    /* The physical place for where this item is located */
     private File itemPath;
 
     /** The media item list contained in this media item */
@@ -33,11 +39,27 @@ public class MediaItem {
         return itemPath;
     }
 
+    /**
+     * This method is responsible for consolidating the date of this media item to the FileSystem.
+     */
     public void consolidateDates() {
 
         MediaAnalyser mediaAnalyser = new MediaAnalyser(this);
-        Date releaseDate = mediaAnalyser.getReleaseDate();
+        Date releaseDate;
+        try {
+            releaseDate = mediaAnalyser.getReleaseDate();
+            logger.debug("Date found for item " + this.itemPath + ": " + releaseDate);
+        } catch (NoDateFoundException e) {
+            logger.debug("No date found for item:" + this.itemPath);
+            return;
+        }
 
+        /* Now that we have the item date, we set it as it's creation date */
+        File theFile = new File(this.itemPath.getAbsolutePath());
+        boolean b = theFile.setLastModified(releaseDate.getTime());
+        if (b){
+            logger.info("Item " + this.toString() + ": Last modified date set to " + releaseDate);
+        }
     }
 
     public void updateItems(List<MediaItem> items) {
