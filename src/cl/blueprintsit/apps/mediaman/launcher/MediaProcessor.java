@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.io.File;
 
-import static javax.swing.JFileChooser.DIRECTORIES_ONLY;
-
 /**
  * This class aims to provide a program for searching media in a given folder
  */
@@ -29,6 +27,10 @@ public class MediaProcessor extends JPanel {
         Library library = mediaManager.createLibrary(currentDirectory);
         logger.info("The folder " + currentDirectory.getAbsolutePath() + " has been created as library " + library.getName());
 
-        mediaManager.consolidateLibraryDates(library);
+        /* Dejar las fechas del FS igual a las del archivo */
+        //mediaManager.consolidateLibraryDates(library);
+
+        /* Modificar el nombre de los items para ver si deben ser vistos ("[2C]") */
+        mediaManager.consolidateToBeSeen(library);
     }
 }

@@ -24,4 +24,11 @@ public interface IMediaManager {
      * @param library The library whose dates are to be consolidated.
      */
     public void consolidateLibraryDates(Library library);
+
+    /**
+     * This method is responsible for modifying the item's name so it's marked to be seen if it has not been rated.
+     *
+     * @param library The library to be managed with 2C.
+     */
+    public void consolidateToBeSeen(Library library);
 }

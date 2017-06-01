@@ -19,36 +19,50 @@ public class Library {
     private final String name;
 
     /** The path on the FS where the library is located */
-    private File libraryHomePath;
+    private final File libraryHomePath;
 
     /** The media items contained on the library */
     private List<MediaItem> mediaItems;
 
+    /**
+     * Default constructor.
+     *
+     * @param libraryRootPath The file system path of the library root folder.
+     */
     public Library(File libraryRootPath) {
         this.libraryHomePath = libraryRootPath;
         this.mediaItems = new ArrayList<MediaItem>();
         this.name = libraryRootPath.getName();
-
-        /* Items are initialized */
-        initializeMediaItems();
     }
 
-    private void initializeMediaItems() {
-        List<MediaItem> scannedItems = MediaAnalyser.scanForItems(new MediaItem(this.libraryHomePath));
-        mediaItems.addAll(scannedItems);
-        logger.debug(scannedItems.size() + " have been added to " + this.getName() + " library.");
-        logger.debug(scannedItems.size() + " in total in " + this.getName() + " library.");
+    public File getLibraryHomePath() {
+        return libraryHomePath;
     }
 
     public List<MediaItem> getMediaItems() {
         return mediaItems;
     }
 
-    public void setMediaItems(List<MediaItem> mediaItems) {
-        this.mediaItems = mediaItems;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public void addMediaItems(MediaItem item) {
+        this.mediaItems.add(item);
+    }
+
+    /**
+     * This method is responsible for counting the number of media items contained on the library.
+     * @return The number of items contained in this library.
+     */
+    public int getSize() {
+
+        int total = 0;
+        for (MediaItem mediaItem : mediaItems) {
+            total++; // current item is counted
+            total += mediaItem.getSize();
+        }
+
+        return total;
     }
 }
