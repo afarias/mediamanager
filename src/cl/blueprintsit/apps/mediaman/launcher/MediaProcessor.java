@@ -1,8 +1,8 @@
 package cl.blueprintsit.apps.mediaman.launcher;
 
-import cl.blueprintsit.apps.mediaman.IMediaManager;
-import cl.blueprintsit.apps.mediaman.Library;
-import cl.blueprintsit.apps.mediaman.MediaManager;
+import cl.blueprintsit.apps.mediaman.*;
+import cl.blueprintsit.apps.mediaman.mediaitem.MediaFactory;
+import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,18 +19,19 @@ public class MediaProcessor extends JPanel {
     public static void main(String[] args) {
         //JFileChooser jfc = new JFileChooser(new File("/Volumes/Andres HD"));
         //jfc.setFileSelectionMode(DIRECTORIES_ONLY);
-        //jfc.showDialog(new MediaProcessor(), "Directorio");
+        //jfc.showDialog(new MediaProcessor(), "Select a directory");
 
         //File currentDirectory = jfc.getCurrentDirectory();
         File currentDirectory = new File("/Volumes/Andres HD");
-        IMediaManager mediaManager = new MediaManager();
-        Library library = mediaManager.createLibrary(currentDirectory);
-        logger.info("The folder " + currentDirectory.getAbsolutePath() + " has been created as library " + library.getName());
+
+        /* The library is created */
+        MediaItem library = new MediaFactory().createMedia(currentDirectory);
 
         /* Dejar las fechas del FS igual a las del archivo */
-        //mediaManager.consolidateLibraryDates(library);
+        MediaManager manager = new MediaManager();
+        manager.consolidateLibraryDates(library);
 
         /* Modificar el nombre de los items para ver si deben ser vistos ("[2C]") */
-        mediaManager.consolidateToBeSeen(library);
+        manager.consolidateToBeSeen(library);
     }
 }
