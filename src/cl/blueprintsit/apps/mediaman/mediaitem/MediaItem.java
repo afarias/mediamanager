@@ -2,6 +2,7 @@ package cl.blueprintsit.apps.mediaman.mediaitem;
 
 import cl.blueprintsit.apps.mediaman.MediaAnalyser;
 import cl.blueprintsit.apps.mediaman.Ranking;
+import cl.blueprintsit.apps.mediaman.model.Tag;
 import cl.blueprintsit.utils.parser.NoDateFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public abstract class MediaItem {
 
     /** The list of media items contained on this media Item */
     private List<MediaItem> mediaItems;
+    private List<Tag> tags;
 
     /**
      * The default constructor that initialize some fields.
@@ -39,6 +41,7 @@ public abstract class MediaItem {
         this.itemFile = itemFile;
         this.mediaItems = new ArrayList<>();
         this.ranking = NONE;
+        this.tags = new ArrayList<>();
     }
 
     /**
@@ -73,33 +76,10 @@ public abstract class MediaItem {
         return mediaItems;
     }
 
-    /**
-     * This method is responsible for consolidating the date of this media item to the FileSystem.
-     */
-    public void consolidateDates() {
-
-        MediaAnalyser mediaAnalyser = new MediaAnalyser(this);
-        Date releaseDate;
-        try {
-            releaseDate = mediaAnalyser.getReleaseDate();
-            logger.debug("Date found for item " + this.itemFile + ": " + releaseDate);
-        } catch (NoDateFoundException e) {
-            logger.debug("No date found for item:" + this.itemFile);
-            return;
-        }
-
-        /* Now that we have the item date, we set it as it's creation date */
-        File theFile = new File(this.itemFile.getAbsolutePath());
-        boolean b = theFile.setLastModified(releaseDate.getTime());
-        if (b) {
-            logger.info("Item " + this.toString() + ": Last modified date set to " + releaseDate);
-        }
-    }
-
     @Override
     public String toString() {
         return "MediaItem{" +
-                "itemFile=" + itemFile +
+                "itemFile=" + itemFile.getName() +
                 '}';
     }
 
@@ -109,4 +89,60 @@ public abstract class MediaItem {
      * @return <code>true</code> if this item is scene and <code>false</code> otherwise.
      */
     public abstract boolean isScene();
+
+    /**
+     * This method is responsible for returning the concrete type of the media.
+     *
+     * @return The media kind.
+     */
+    public abstract String getType();
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    /**
+     * This method is responsible for determining whether the current media item has a given tag.
+     *
+     * @param tagType The tag type to be searched.
+     *
+     * @return <code>true</code> if the tag is in the item and <code>false</code> if not.
+     */
+    public boolean containsTag(String tagType) {
+
+        for (Tag tag : tags) {
+            String type = tag.getType();
+            if (type != null && type.toUpperCase().equals(tagType.toUpperCase())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * This method is responsible for returning the current media item with the given tag type.
+     *
+     * @param tagType The tag's type.
+     *
+     * @return The Tag's value.
+     */
+    public Tag getTag(String tagType) {
+        for (Tag tag : tags) {
+            String type = tag.getType();
+            if (type != null && type.toUpperCase().equals(tagType.toUpperCase())) {
+                return tag;
+            }
+        }
+
+        throw new IllegalArgumentException("There is no such tag");
+    }
+
+    public boolean addTag(Tag tag) {
+        return this.tags.add(tag);
+    }
 }

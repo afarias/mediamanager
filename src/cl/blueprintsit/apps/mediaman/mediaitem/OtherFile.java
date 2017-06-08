@@ -14,4 +14,9 @@ public class OtherFile extends MediaItem {
     public boolean isScene() {
         return false;
     }
+
+    @Override
+    public String getType() {
+        return "Other";
+    }
 }

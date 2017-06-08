@@ -8,9 +8,6 @@ import java.util.List;
  */
 public class SceneFolder extends Scene {
 
-    /* The items contained in this Scene Folder */
-    private List<MediaItem> mediaChildren;
-
     /**
      * The default constructor takes the single file and creating a scene from it.
      *
@@ -18,12 +15,6 @@ public class SceneFolder extends Scene {
      * @param mediaChildren The other media contained in this folder scene.
      */
     public SceneFolder(File mediaFile, List<MediaItem> mediaChildren) {
-        super(mediaFile);
-
-        this.mediaChildren = mediaChildren;
-    }
-
-    public List<MediaItem> getMediaChildren() {
-        return mediaChildren;
+        super(mediaFile, mediaChildren);
     }
 }

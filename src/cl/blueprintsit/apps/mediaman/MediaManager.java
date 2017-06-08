@@ -1,15 +1,13 @@
 package cl.blueprintsit.apps.mediaman;
 
-import cl.blueprintsit.apps.mediaman.mediaitem.MediaFactory;
+import cl.blueprintsit.apps.mediaman.analyser.DateConsolidator;
 import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.List;
 
-import static cl.blueprintsit.apps.mediaman.MediaKind.*;
 import static cl.blueprintsit.apps.mediaman.Ranking.NONE;
 import static cl.blueprintsit.apps.mediaman.mediaitem.MediaFactory.parseRanking;
 
@@ -21,11 +19,10 @@ public class MediaManager implements IMediaManager {
     public void organizeLibrary(MediaItem mediaItem) {
 
         /* The library is iterated through it's media items in order to perform the organization */
-        for (MediaItem mediaChild : mediaItem.getChildrenMediaItems()) {
-            mediaChild.consolidateDates();
-        }
+        DateConsolidator dateConsolidator = new DateConsolidator();
+        List<MediaItem> mediaItemsModified = dateConsolidator.consolidateDates(mediaItem, true);
 
-        mediaItem.consolidateDates();
+        logger.info("The number of items whose date was consolidated is {}", mediaItemsModified.size());
     }
 
     /**
@@ -47,12 +44,5 @@ public class MediaManager implements IMediaManager {
 
         /* If nothing changed... */
         return false;
-    }
-
-    @Override
-    public void consolidateLibraryDates(MediaItem library) {
-        for (MediaItem mediaItem : library.getChildrenMediaItems()) {
-            mediaItem.consolidateDates();
-        }
     }
 }

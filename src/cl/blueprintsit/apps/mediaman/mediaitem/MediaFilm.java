@@ -33,4 +33,9 @@ public class MediaFilm extends MediaItem {
     public boolean isScene() {
         return false;
     }
+
+    @Override
+    public String getType() {
+        return "Film";
+    }
 }

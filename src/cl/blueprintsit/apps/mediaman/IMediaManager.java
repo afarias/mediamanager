@@ -20,13 +20,6 @@ public interface IMediaManager {
     void organizeLibrary(MediaItem library);
 
     /**
-     * This method is responsible for consolidating the library dates files and folders.
-     *
-     * @param library The library whose dates are to be consolidated.
-     */
-    public void consolidateLibraryDates(MediaItem library);
-
-    /**
      * This method is responsible for modifying the item's name so it's marked to be seen if it has not been rated.
      *
      * @param library The library to be managed with 2C.

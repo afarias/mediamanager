@@ -18,4 +18,9 @@ public class MediaContainer extends MediaItem {
     public boolean isScene() {
         return false;
     }
+
+    @Override
+    public String getType() {
+        return "Container";
+    }
 }

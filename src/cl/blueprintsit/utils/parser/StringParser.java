@@ -109,6 +109,28 @@ public class StringParser {
             return calendar.getTime();
         }
 
+
+        /* PATTERN: [YY.MM.DD] */
+        usDatePattern = Pattern.compile("\\["+DAY_AND_MONTH_PATTER+SEPARATOR_PATTERN + DAY_AND_MONTH_PATTER + SEPARATOR_PATTERN + DAY_AND_MONTH_PATTER + "\\]");
+        usDateMatcher = usDatePattern.matcher(text);
+        if (usDateMatcher.find()) {
+
+            String group = usDateMatcher.group();
+            logger.debug("Patter found: " + group);
+
+            Integer monthOrDay1 = Integer.parseInt(group.substring(1, 3));
+            Integer monthOrDay2 = Integer.parseInt(group.substring(4, 6));
+            Integer monthOrDay3 = Integer.parseInt(group.substring(7, 9));
+            Calendar calendar = Calendar.getInstance();
+
+            /* The year is first here: */
+            if ((monthOrDay1 > 12) && (monthOrDay2 <=12) && monthOrDay3 > 12) {
+                calendar.set(2000 + monthOrDay1, monthOrDay2 - 1, monthOrDay3);
+            }
+
+            return calendar.getTime();
+        }
+
         throw new NoDateFoundException();
     }
 }
