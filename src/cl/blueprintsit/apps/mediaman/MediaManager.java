@@ -1,6 +1,8 @@
 package cl.blueprintsit.apps.mediaman;
 
 import cl.blueprintsit.apps.mediaman.analyser.DateConsolidator;
+import cl.blueprintsit.apps.mediaman.analyser.TagCorrecter;
+import cl.blueprintsit.apps.mediaman.analyser.YearCorrecter;
 import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,5 +46,13 @@ public class MediaManager implements IMediaManager {
 
         /* If nothing changed... */
         return false;
+    }
+
+    public void fixTags(MediaItem library) {
+
+        int i = new YearCorrecter().repairYearInParenthesis(library);
+        logger.info("Year Tag corrected for {} files", i);
+
+        i = new TagCorrecter().fix(library);
     }
 }

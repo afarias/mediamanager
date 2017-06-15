@@ -21,6 +21,7 @@ public class DateUtils {
         put("^[a-z]{3}\\s{1,}\\d{1,2},\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}\\s(AM|PM)", "MMM dd, yyyy HH:mm:ss");
         put("^[a-z]{3}\\s{1,}\\d{1,2},\\s\\d{4}\\s\\d{1,2}:\\d{2}:\\d{2}\\s(AM|PM)\\s[a-z]{1,4}", "MMM dd, yyyy HH:mm:ss"); //
         put("^\\d{8}$", "yyyyMMdd");
+        put("^\\d{4}$", "yyyy");
         put("^\\d{1,2}-\\d{1,2}-\\d{4}$", "dd-MM-yyyy");
         put("^\\d{4}-\\d{1,2}-\\d{1,2}$", "yyyy-MM-dd");
         put("^\\d{4}-\\d{1,2}$", "yyyy-MM");

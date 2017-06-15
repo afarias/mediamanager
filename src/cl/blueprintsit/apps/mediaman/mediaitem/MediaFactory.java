@@ -78,8 +78,7 @@ public class MediaFactory {
             media = new MediaContainer(mediaFile, mediaChildren);
         }
 
-
-        logger.info("Media item created: " + media + " of type " + media.getType());
+        logger.debug("Media item created: " + media + " of type " + media.getType());
         tagFactory.createTags(media);
         return media;
     }

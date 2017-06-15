@@ -31,6 +31,8 @@ public class MediaProcessor extends JPanel {
 
         /* Modificar el nombre de los items para ver si deben ser vistos ("[2C]") */
         manager.consolidateToBeSeen(library);
+        manager.fixTags(library);
+
     }
 
     /**
