@@ -1,5 +1,8 @@
 package cl.blueprintsit.apps.mediaman.mediaitem;
 
+import cl.blueprintsit.apps.mediaman.IMediaVisitor;
+import cl.blueprintsit.utils.TagUtils;
+
 import java.io.File;
 import java.util.List;
 
@@ -10,8 +13,8 @@ import java.util.List;
  */
 public class MediaContainer extends MediaItem {
 
-    public MediaContainer(File mediaFile, List<MediaItem> mediaChildren) {
-        super(mediaFile, mediaChildren);
+    public MediaContainer(File mediaFile, List<MediaItem> mediaChildren, TagUtils tagUtils) {
+        super(mediaFile, mediaChildren, tagUtils);
     }
 
     @Override
@@ -22,5 +25,10 @@ public class MediaContainer extends MediaItem {
     @Override
     public String getType() {
         return "Container";
+    }
+
+    @Override
+    public int visit(IMediaVisitor mediaVisitor) {
+        return mediaVisitor.visit(this);
     }
 }

@@ -1,6 +1,7 @@
 package cl.blueprintsit.apps.mediaman.mediaitem;
 
-import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
+import cl.blueprintsit.apps.mediaman.IMediaVisitor;
+import cl.blueprintsit.utils.TagUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,8 +16,8 @@ public class MediaFilm extends MediaItem {
     /** The media item list contained in this media item */
     private List<MediaItem> mediaItems;
 
-    public MediaFilm(File itemFile, List<MediaItem> mediaChildren) {
-        super(itemFile);
+    public MediaFilm(File itemFile, List<MediaItem> mediaChildren, TagUtils tagUtils) {
+        super(itemFile, tagUtils);
         this.mediaItems = new ArrayList<>(mediaChildren);
     }
 
@@ -37,5 +38,10 @@ public class MediaFilm extends MediaItem {
     @Override
     public String getType() {
         return "Film";
+    }
+
+    @Override
+    public int visit(IMediaVisitor mediaVisitor) {
+        return mediaVisitor.visit(this);
     }
 }

@@ -2,6 +2,7 @@ package cl.blueprintsit.apps.mediaman.mediaitem;
 
 import cl.blueprintsit.apps.mediaman.ExcludedDirectories;
 import cl.blueprintsit.apps.mediaman.Ranking;
+import cl.blueprintsit.utils.TagUtils;
 import cl.blueprintsit.utils.strings.StringUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class MediaFactory {
      *
      * @return An object representing the library.
      */
-    public MediaItem createMedia(File mediaFile) {
+    public MediaItem createMedia(File mediaFile, TagUtils tagUtils) {
 
 
         /* The library is created from its root folder and its basic data is set */
@@ -41,7 +42,7 @@ public class MediaFactory {
         /* Cases are analysed: simpler case first: a single file */
         List<MediaItem> mediaChildren;
         if (mediaFile.isFile()) {
-            MediaItem singleItem = createSingleFile(mediaFile);
+            MediaItem singleItem = createSingleFile(mediaFile, tagUtils);
             logger.debug("Item created: {}", singleItem);
             return singleItem;
         }
@@ -54,7 +55,7 @@ public class MediaFactory {
             for (File mediaChild : fileChildren) {
 
             /* The file is processed and a Media Item is obtained from it */
-                MediaItem mediaItem = createMedia(mediaChild);
+                MediaItem mediaItem = createMedia(mediaChild, tagUtils);
 
             /* And added to a list for further analysis */
                 mediaChildren.add(mediaItem);
@@ -71,11 +72,11 @@ public class MediaFactory {
 
         /* First it's tested for being a scene */
         if (isScene(mediaFile, mediaChildren)) {
-            media = new SceneFolder(mediaFile, mediaChildren);
+            media = new SceneFolder(mediaFile, mediaChildren, tagUtils);
         } else if (isFilm(mediaFile, mediaChildren)) {
-            media = new MediaFilm(mediaFile, mediaChildren);
+            media = new MediaFilm(mediaFile, mediaChildren, tagUtils);
         } else {
-            media = new MediaContainer(mediaFile, mediaChildren);
+            media = new MediaContainer(mediaFile, mediaChildren, tagUtils);
         }
 
         logger.debug("Media item created: " + media + " of type " + media.getType());
@@ -191,16 +192,16 @@ public class MediaFactory {
      *
      * @return An instance of a File.
      */
-    private MediaItem createSingleFile(File mediaFile) {
+    private MediaItem createSingleFile(File mediaFile, TagUtils tagUtils) {
 
         /* The file might be a video media file in which case is a scene file: */
         if (isVideo(mediaFile)) {
 
             /* The business object is created */
-            SceneFile sceneFile = new SceneFile(mediaFile);
+            SceneFile sceneFile = new SceneFile(mediaFile, tagUtils);
             return sceneFile;
         } else {
-            return new OtherFile(mediaFile);
+            return new OtherFile(mediaFile, tagUtils);
         }
     }
 

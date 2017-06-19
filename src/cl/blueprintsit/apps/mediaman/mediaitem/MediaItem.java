@@ -1,15 +1,14 @@
 package cl.blueprintsit.apps.mediaman.mediaitem;
 
-import cl.blueprintsit.apps.mediaman.MediaAnalyser;
+import cl.blueprintsit.apps.mediaman.IMediaVisitor;
 import cl.blueprintsit.apps.mediaman.Ranking;
 import cl.blueprintsit.apps.mediaman.model.Tag;
-import cl.blueprintsit.utils.parser.NoDateFoundException;
+import cl.blueprintsit.utils.TagUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static cl.blueprintsit.apps.mediaman.Ranking.NONE;
@@ -21,7 +20,7 @@ import static cl.blueprintsit.apps.mediaman.Ranking.NONE;
  * @author Andrés Farías.
  * @see Scene
  */
-public abstract class MediaItem {
+public abstract class MediaItem implements IMediaItem {
 
     private static final Logger logger = LoggerFactory.getLogger(MediaItem.class);
 
@@ -32,13 +31,18 @@ public abstract class MediaItem {
 
     /** The list of media items contained on this media Item */
     private List<MediaItem> mediaItems;
+
+    /** The list of the item's tags */
     private List<Tag> tags;
+
+    private TagUtils tagUtils;
 
     /**
      * The default constructor that initialize some fields.
      */
-    MediaItem(File itemFile) {
+    MediaItem(File itemFile, TagUtils tagUtils) {
         this.itemFile = itemFile;
+        this.tagUtils = tagUtils;
         this.mediaItems = new ArrayList<>();
         this.ranking = NONE;
         this.tags = new ArrayList<>();
@@ -49,9 +53,10 @@ public abstract class MediaItem {
      *
      * @param itemFile   The media file.
      * @param mediaItems The mediaItem's children.
+     * @param tagUtils   The TagUtils to be used to manage tags.
      */
-    public MediaItem(File itemFile, List<MediaItem> mediaItems) {
-        this(itemFile);
+    public MediaItem(File itemFile, List<MediaItem> mediaItems, TagUtils tagUtils) {
+        this(itemFile, tagUtils);
 
         this.mediaItems.addAll(mediaItems);
     }
@@ -144,5 +149,48 @@ public abstract class MediaItem {
 
     public boolean addTag(Tag tag) {
         return this.tags.add(tag);
+    }
+
+    /**
+     * This method
+     * @param tagValue
+     * @return
+     */
+    public boolean containsTagValue(String tagValue) {
+
+        for (Tag tag : tags) {
+            String value = tag.getValue();
+            if (value != null && value.equalsIgnoreCase(tagValue)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * This method is responsible for removing a tag from the Media Item, always keeping an eye on file system
+     * consistency.
+     *
+     * @param tagValue The tag value to be removed.
+     *
+     * @return The number of tags removed.
+     */
+    public int removeTagsWithValue(String tagValue) {
+
+        /* If it exists, the tag is retrieved */
+        int removedTags = 0;
+        for (Tag tag : tags) {
+            if (tag.getValue().equalsIgnoreCase(tagValue)) {
+
+                /* Now, every time a tag is removed, the consistence is checked and enforced */
+                if (this.tags.remove(tag)) {
+                    removedTags++;
+                    tagUtils.removeTagFromFile(tagValue, this);
+                }
+            }
+        }
+
+        return removedTags;
     }
 }

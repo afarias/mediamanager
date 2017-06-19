@@ -25,6 +25,7 @@ public class FileUtils {
      * This method is responsible for checking whether a specific file is reachable.
      *
      * @param filePath The path of the file to be checked.
+     *
      * @return <code>true</code> if the file is reachable and <code>false</code> otherwise.
      */
     public static boolean connect(String filePath) {
@@ -36,7 +37,9 @@ public class FileUtils {
      * This method is responsible for returning an array containing all the files contained in the given Directory.
      *
      * @param theFolder The directory from which the files contained are listed.
+     *
      * @return A list with a reference to all the files contained the <code>theFolder</code>.
+     *
      * @throws java.io.FileNotFoundException Thrown if <code>theFolder</code> does not exist.
      */
     public static List<File> getFilesFromFolder(File theFolder) throws FileNotFoundException {
@@ -57,6 +60,7 @@ public class FileUtils {
 
     /**
      * @return
+     *
      * @throws java.io.FileNotFoundException
      */
     public static List<SmbFile> getFilesFromSambaFolder(String host, String username, String password,
@@ -72,7 +76,9 @@ public class FileUtils {
      * This method is responsible for retrieving the folders children of a given folder.
      *
      * @param directory The directory whose content is to be searched.
+     *
      * @return A list of folders contained in the given folder.
+     *
      * @throws java.io.FileNotFoundException If the given <code>directory</code> does not exists.
      * @throws NotADirectoryException        If the given <code>directory</code> is not a folder.
      */
@@ -93,7 +99,9 @@ public class FileUtils {
      * This method is responsible for reading the bytes from a file and returning them in a byte array.
      *
      * @param file The file from which the contents are read.
+     *
      * @return The file's content in an byte array.
+     *
      * @throws java.io.IOError Thrown if the file does not exist or if there are problems while reading it..
      */
     public static byte[] getContents(File file) throws IOException {
@@ -206,6 +214,7 @@ public class FileUtils {
      * This method extracts the name of the file given by an eventually absolute path.
      *
      * @param filePath The path of a file, eventually absolute.
+     *
      * @return The name of the file given.
      */
     public static String getFileName(String filePath) {
@@ -228,6 +237,7 @@ public class FileUtils {
      * This method is responsible for determining if a given path is absolute or relative.
      *
      * @param path The path to be checked.
+     *
      * @return <code>true</code> if the path is absolute and <code>false</code> otherwise.
      */
     public static boolean isAbsolutePath(String path) {
@@ -285,6 +295,7 @@ public class FileUtils {
      * This method is responsible for assuring a given <code>file</code> exists and it is a file (not a folder).
      *
      * @param file The file to be validate.
+     *
      * @throws java.io.FileNotFoundException Thrown if the given <code>file</code> does not exist.
      */
     public static void validateFile(File file) throws FileNotFoundException {
@@ -351,6 +362,22 @@ public class FileUtils {
         } catch (IOException e) {
             return true;
         }
+    }
+
+    /**
+     * This method is responsible for renaming a file, but only on its filename.
+     *
+     * @param file        The file to be modified
+     * @param newFileName The name to rename to.
+     *
+     * @return <code>true</code> if the file was modified and <code>false</code> otherwise.
+     */
+    public static boolean renameFileName(File file, String newFileName) {
+        String absolutePath = file.getAbsolutePath();
+        String basePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
+
+        String newPathName = basePath + newFileName;
+        return file.renameTo(new File(newPathName));
     }
 
 /*

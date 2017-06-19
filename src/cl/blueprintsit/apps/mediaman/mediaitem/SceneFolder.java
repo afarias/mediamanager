@@ -1,5 +1,8 @@
 package cl.blueprintsit.apps.mediaman.mediaitem;
 
+import cl.blueprintsit.apps.mediaman.IMediaVisitor;
+import cl.blueprintsit.utils.TagUtils;
+
 import java.io.File;
 import java.util.List;
 
@@ -14,7 +17,12 @@ public class SceneFolder extends Scene {
      * @param mediaFile     The media file from which it is created.
      * @param mediaChildren The other media contained in this folder scene.
      */
-    public SceneFolder(File mediaFile, List<MediaItem> mediaChildren) {
-        super(mediaFile, mediaChildren);
+    public SceneFolder(File mediaFile, List<MediaItem> mediaChildren, TagUtils tagUtils) {
+        super(mediaFile, mediaChildren, tagUtils);
+    }
+
+    @Override
+    public int visit(IMediaVisitor mediaVisitor) {
+        return 0;
     }
 }

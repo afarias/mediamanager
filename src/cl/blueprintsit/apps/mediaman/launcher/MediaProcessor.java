@@ -4,6 +4,7 @@ import cl.blueprintsit.apps.mediaman.MediaManager;
 import cl.blueprintsit.apps.mediaman.analyser.DateConsolidator;
 import cl.blueprintsit.apps.mediaman.mediaitem.MediaFactory;
 import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
+import cl.blueprintsit.utils.TagUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ public class MediaProcessor extends JPanel {
     public static void main(String[] args) {
 
         /* The library is created */
-        MediaItem library = new MediaFactory().createMedia(new File("/Volumes/Andres HD"));
+        MediaItem library = new MediaFactory().createMedia(new File("/Volumes/Andres HD"), new TagUtils("[", "]"));
 
         /* Let's consolidate the dates */
         MediaManager manager = new MediaManager();
@@ -31,7 +32,8 @@ public class MediaProcessor extends JPanel {
 
         /* Modificar el nombre de los items para ver si deben ser vistos ("[2C]") */
         manager.consolidateToBeSeen(library);
-        manager.fixTags(library);
+
+        //manager.fixTags(library);
 
     }
 

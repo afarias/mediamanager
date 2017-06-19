@@ -1,9 +1,12 @@
 package cl.blueprintsit.utils;
 
+import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
 import cl.blueprintsit.apps.mediaman.model.Tag;
+import cl.blueprintsit.utils.files.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,5 +86,22 @@ public class TagUtils {
         }
 
         return tokens;
+    }
+
+    /**
+     * This method is responsible for consolidating the file with respect to the tag removed.
+     *
+     * @param tagValue  The tag to be removed.
+     * @param mediaItem The media item from which the tag is removed.
+     *
+     * @return <code>true</code> if the tag is removed and <code>false</code> otherwise.
+     */
+    public boolean removeTagFromFile(String tagValue, MediaItem mediaItem) {
+
+        File itemFile = mediaItem.getItemFile();
+        String fileName = itemFile.getName();
+
+        String newFileName = fileName.replace(initDelimiter + tagValue + endDelimiter, "");
+        return FileUtils.renameFileName(itemFile, newFileName);
     }
 }
