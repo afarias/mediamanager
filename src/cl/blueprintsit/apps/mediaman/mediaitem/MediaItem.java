@@ -18,7 +18,7 @@ import static cl.blueprintsit.apps.mediaman.Ranking.NONE;
  * It can be either a single file, or a folder containing several others media items or media folders.
  *
  * @author Andrés Farías.
- * @see Scene
+ * @see MediaScene
  */
 public abstract class MediaItem implements IMediaItem {
 
@@ -204,6 +204,23 @@ public abstract class MediaItem implements IMediaItem {
         }
 
         tags.removeAll(removedTags);
+
+        /* Tags are consolidated to the file */
+        this.consolidateTags();
         return removedTags.size();
+    }
+
+    /**
+     * This method is responsible for consolidating the tags with respect to the filename.
+     *
+     * @return <code>true</code> if the item was consolidated and false otherwise.
+     */
+    protected boolean consolidateTags() {
+
+        /* The file name is built from zero, starting for retrieve the filename without any tags */
+        String finalName = tagUtils.removeTagsFromText(this.itemFile.getName());
+        finalName = tagUtils.appendTags(finalName, tags);
+
+        return this.itemFile.renameTo(new File(finalName));
     }
 }

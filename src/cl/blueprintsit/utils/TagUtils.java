@@ -112,4 +112,33 @@ public class TagUtils {
         String newFileName = fileName.replaceAll("\\" + initDelimiter + tagValue + "\\" + endDelimiter, "");
         return FileUtils.renameFileName(itemFile, newFileName);
     }
+
+    /**
+     * This method is responsible for removing every Tag within the given <code>text</code>.
+     *
+     * @param text The text given from which the tags are to be removed.
+     *
+     * @return The same text, with no tags.
+     */
+    public String removeTagsFromText(String text) {
+
+        /* The tags are extracted */
+        List<Tag> tags = extractTagsFromLine(text);
+        String result = text;
+        for (Tag tag : tags) {
+            result = result.replace(initDelimiter + tag.getValue() + endDelimiter, "");
+        }
+
+        return result;
+    }
+
+    public String appendTags(String text, List<Tag> tags) {
+
+        StringBuilder result = new StringBuilder(text);
+        for (Tag tag : tags) {
+            result.append(initDelimiter).append(tag.getValue()).append(endDelimiter);
+        }
+
+        return result.toString();
+    }
 }

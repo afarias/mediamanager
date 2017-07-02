@@ -77,7 +77,7 @@ public class MediaFactory {
 
         /* First it's tested for being a scene */
         if (isScene(mediaFile, mediaChildren)) {
-            media = new SceneFolder(mediaFile, mediaChildren, tagUtils);
+            media = new MediaSceneFolder(mediaFile, mediaChildren, tagUtils);
         } else if (isFilm(mediaFile, mediaChildren)) {
             media = new MediaFilm(mediaFile, mediaChildren, tagUtils);
         } else {
@@ -99,7 +99,7 @@ public class MediaFactory {
      * @return <code>true</code> if the media items match de Film definition and <code>false</code> otherwise.
      */
     private boolean isScene(File mediaFile, List<MediaItem> mediaChildren) {
-        List scenes = filter(mediaChildren, SceneFile.class);
+        List scenes = filter(mediaChildren, MediaSceneFile.class);
         return scenes.size() == 1;
     }
 
@@ -125,7 +125,7 @@ public class MediaFactory {
         }
 
         /* If the folder only contains scenes (and no films or other files, we took it as a something else */
-        if (containsOnly(mediaChildren, Scene.class)) {
+        if (containsOnly(mediaChildren, MediaScene.class)) {
             return false;
         }
 
@@ -133,7 +133,7 @@ public class MediaFactory {
     }
 
     private boolean containsOnlyScenes(List<MediaItem> mediaChildren) {
-        return !containsOnly(mediaChildren, Scene.class);
+        return !containsOnly(mediaChildren, MediaScene.class);
     }
 
     /**
@@ -203,7 +203,7 @@ public class MediaFactory {
         if (isVideo(mediaFile)) {
 
             /* The business object is created */
-            SceneFile sceneFile = new SceneFile(mediaFile, tagUtils);
+            MediaSceneFile sceneFile = new MediaSceneFile(mediaFile, tagUtils);
             return sceneFile;
         } else {
             return new OtherFile(mediaFile, tagUtils);

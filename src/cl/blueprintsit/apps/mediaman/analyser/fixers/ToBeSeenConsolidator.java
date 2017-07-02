@@ -4,7 +4,7 @@ import cl.blueprintsit.apps.mediaman.IMediaVisitor;
 import cl.blueprintsit.apps.mediaman.mediaitem.MediaContainer;
 import cl.blueprintsit.apps.mediaman.mediaitem.MediaFilm;
 import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
-import cl.blueprintsit.apps.mediaman.mediaitem.SceneFile;
+import cl.blueprintsit.apps.mediaman.mediaitem.MediaSceneFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,7 @@ public class ToBeSeenConsolidator implements IMediaVisitor {
     }
 
     @Override
-    public int visit(SceneFile sceneFile) {
+    public int visit(MediaSceneFile sceneFile) {
         return 0;
     }
 }
