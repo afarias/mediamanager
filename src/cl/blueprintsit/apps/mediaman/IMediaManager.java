@@ -25,4 +25,7 @@ public interface IMediaManager {
      * @return The number of consolidated items
      */
     public int consolidateToBeSeen(MediaItem mediaITem);
+
+    public int fixTags(MediaItem library);
+
 }

@@ -34,13 +34,10 @@ public class TagFactory {
             String tagValue = tag.getValue();
 
             /* Is it a date if... */
-            if (DateUtils.determineDateFormat(tagValue) != null){
+            if (DateUtils.determineDateFormat(tagValue) != null) {
                 tag.setType("date");
-                mediaItem.addTag(tag);
             }
-
+            mediaItem.addTag(tag);
         }
     }
-
-
 }

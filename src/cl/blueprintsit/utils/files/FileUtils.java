@@ -376,8 +376,8 @@ public class FileUtils {
         String absolutePath = file.getAbsolutePath();
         String basePath = absolutePath.substring(0, absolutePath.lastIndexOf("/"));
 
-        String newPathName = basePath + newFileName;
-        return file.renameTo(new File(newPathName));
+        String newPathName = basePath + "/" + newFileName;
+        return file.renameTo(new File(newPathName.trim()));
     }
 
 /*

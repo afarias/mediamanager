@@ -37,6 +37,14 @@ public class TagUtils {
         this.endDelimiter = endDelimiter;
     }
 
+    public String getInitDelimiter() {
+        return initDelimiter;
+    }
+
+    public String getEndDelimiter() {
+        return endDelimiter;
+    }
+
     /**
      * This method is responsible for parsing a line and returning the token value at a specific position.
      *
@@ -101,7 +109,7 @@ public class TagUtils {
         File itemFile = mediaItem.getItemFile();
         String fileName = itemFile.getName();
 
-        String newFileName = fileName.replace(initDelimiter + tagValue + endDelimiter, "");
+        String newFileName = fileName.replaceAll("\\" + initDelimiter + tagValue + "\\" + endDelimiter, "");
         return FileUtils.renameFileName(itemFile, newFileName);
     }
 }

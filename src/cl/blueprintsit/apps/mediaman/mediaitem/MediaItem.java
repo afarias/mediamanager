@@ -1,6 +1,5 @@
 package cl.blueprintsit.apps.mediaman.mediaitem;
 
-import cl.blueprintsit.apps.mediaman.IMediaVisitor;
 import cl.blueprintsit.apps.mediaman.Ranking;
 import cl.blueprintsit.apps.mediaman.model.Tag;
 import cl.blueprintsit.utils.TagUtils;
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static cl.blueprintsit.apps.mediaman.Ranking.NONE;
 
@@ -77,8 +77,17 @@ public abstract class MediaItem implements IMediaItem {
         return itemFile;
     }
 
+    /**
+     * This method is responsible for adding media items (folders or files) to this item.
+     *
+     * @param items The items to be added.
+     */
+    public void addMediaItems(Set<MediaItem> items) {
+        this.mediaItems.addAll(items);
+    }
+
     public List<MediaItem> getChildrenMediaItems() {
-        return mediaItems;
+        return this.mediaItems;
     }
 
     @Override
@@ -152,15 +161,17 @@ public abstract class MediaItem implements IMediaItem {
     }
 
     /**
-     * This method
-     * @param tagValue
-     * @return
+     * This method is responsible for determining if a given tag is present on the item.
+     *
+     * @param tagValue The tag value to be searched.
+     *
+     * @return <code>true</code> if the tag is in the item and <code>false</code> otherwise.
      */
     public boolean containsTagValue(String tagValue) {
 
         for (Tag tag : tags) {
             String value = tag.getValue();
-            if (value != null && value.equalsIgnoreCase(tagValue)) {
+            if (value != null && value.equals(tagValue)) {
                 return true;
             }
         }
@@ -179,18 +190,20 @@ public abstract class MediaItem implements IMediaItem {
     public int removeTagsWithValue(String tagValue) {
 
         /* If it exists, the tag is retrieved */
-        int removedTags = 0;
+        List<Tag> removedTags = new ArrayList<>();
         for (Tag tag : tags) {
-            if (tag.getValue().equalsIgnoreCase(tagValue)) {
+            if (tag.getValue().equals(tagValue)) {
 
                 /* Now, every time a tag is removed, the consistence is checked and enforced */
-                if (this.tags.remove(tag)) {
-                    removedTags++;
-                    tagUtils.removeTagFromFile(tagValue, this);
+                removedTags.add(tag);
+                boolean created = tagUtils.removeTagFromFile(tagValue, this);
+                if (created) {
+                    logger.info("File Item renamed to: {}", this.itemFile.getName());
                 }
             }
         }
 
-        return removedTags;
+        tags.removeAll(removedTags);
+        return removedTags.size();
     }
 }

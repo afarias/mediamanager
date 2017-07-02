@@ -1,7 +1,10 @@
 package cl.blueprintsit.apps.mediaman.analyser;
 
 import cl.blueprintsit.apps.mediaman.IMediaVisitor;
-import cl.blueprintsit.apps.mediaman.mediaitem.*;
+import cl.blueprintsit.apps.mediaman.mediaitem.MediaContainer;
+import cl.blueprintsit.apps.mediaman.mediaitem.MediaFilm;
+import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
+import cl.blueprintsit.apps.mediaman.mediaitem.SceneFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +20,30 @@ public class TagCorrecter implements IMediaVisitor {
     @Override
     public int visit(MediaContainer mediaContainer) {
 
-        String previousFileName = "NOTHING";
         int counter = 0;
+        if (mediaContainer.getItemFile().getName().contains("[]")) {
+            mediaContainer.removeTagsWithValue("");
+        }
+
+        for (MediaItem mediaItem : mediaContainer.getChildrenMediaItems()) {
+            mediaItem.visit(this);
+        }
+
+        return counter;
+    }
+
+    @Override
+    public int visit(MediaFilm mediaFilm) {
+        return 0;
+    }
+
+    @Override
+    public int visit(SceneFile sceneFile) {
+        return 0;
+    }
+
+    private int correctDirectoriesAndChildren(MediaContainer mediaContainer, int counter) {
+        String previousFileName = "NOTHING";
         for (MediaItem childItem : mediaContainer.getChildrenMediaItems()) {
 
             File itemFile = childItem.getItemFile();
@@ -46,18 +71,8 @@ public class TagCorrecter implements IMediaVisitor {
 
             counter += childItem.visit(this);
         }
-
         return counter;
     }
 
-    @Override
-    public int visit(MediaFilm mediaFilm) {
-        return 0;
-    }
-
-    @Override
-    public int visit(SceneFile sceneFile) {
-        return 0;
-    }
 
 }

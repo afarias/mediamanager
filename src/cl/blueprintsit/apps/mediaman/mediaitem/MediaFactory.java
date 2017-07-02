@@ -25,6 +25,12 @@ public class MediaFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(MediaFactory.class);
 
+    TagFactory tagFactory;
+
+    public MediaFactory(TagUtils tagUtils) {
+        tagFactory = new TagFactory(tagUtils.getInitDelimiter(), tagUtils.getEndDelimiter());
+    }
+
     /**
      * This method is responsible for creating an object that represents a file system library.
      *
@@ -37,7 +43,6 @@ public class MediaFactory {
 
         /* The library is created from its root folder and its basic data is set */
         MediaItem media;
-        TagFactory tagFactory = new TagFactory("[", "]");
 
         /* Cases are analysed: simpler case first: a single file */
         List<MediaItem> mediaChildren;

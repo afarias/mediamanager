@@ -21,6 +21,10 @@ public class SceneFolder extends Scene {
         super(mediaFile, mediaChildren, tagUtils);
     }
 
+    public SceneFolder(File file, TagUtils tagUtils) {
+        super(file, tagUtils);
+    }
+
     @Override
     public int visit(IMediaVisitor mediaVisitor) {
         return 0;

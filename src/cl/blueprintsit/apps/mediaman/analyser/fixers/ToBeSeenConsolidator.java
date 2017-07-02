@@ -31,8 +31,9 @@ public class ToBeSeenConsolidator implements IMediaVisitor {
     public int visit(MediaContainer mediaContainer) {
 
         /* If the tag IS THERE then it is removed */
-        if (mediaContainer.containsTagValue("2C")) {
+        if (mediaContainer.containsTagValue("2C") || mediaContainer.containsTagValue("2c")) {
             mediaContainer.removeTagsWithValue("2C");
+            mediaContainer.removeTagsWithValue("2c");
         }
 
         /* It then visits the children */
@@ -62,6 +63,7 @@ public class ToBeSeenConsolidator implements IMediaVisitor {
         if (parseRanking(mediaFilm).equals(NONE)) {
 
             File itemFile = mediaFilm.getItemFile();
+            mediaFilm.removeTagsWithValue("2C");
             boolean renamed = itemFile.renameTo(new File(itemFile.getAbsolutePath() + " [2C]"));
             if (renamed) {
                 logger.info("File renamed to be seen: " + itemFile.getName());

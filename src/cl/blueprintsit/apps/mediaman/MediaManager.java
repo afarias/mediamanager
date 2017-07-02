@@ -32,4 +32,9 @@ public class MediaManager implements IMediaManager {
     public int consolidateToBeSeen(MediaItem mediaITem) {
         return mediaITem.visit(new ToBeSeenConsolidator());
     }
+
+    @Override
+    public int fixTags(MediaItem library) {
+        return library.visit(new TagCorrecter());
+    }
 }
