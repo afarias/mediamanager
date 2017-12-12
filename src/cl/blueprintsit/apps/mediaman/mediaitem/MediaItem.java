@@ -190,24 +190,19 @@ public abstract class MediaItem implements IMediaItem {
     public int removeTagsWithValue(String tagValue) {
 
         /* If it exists, the tag is retrieved */
-        List<Tag> removedTags = new ArrayList<>();
+        List<Tag> tagsToBeRemoved = new ArrayList<>();
         for (Tag tag : tags) {
             if (tag.getValue().equals(tagValue)) {
-
-                /* Now, every time a tag is removed, the consistence is checked and enforced */
-                removedTags.add(tag);
-                boolean created = tagUtils.removeTagFromFile(tagValue, this);
-                if (created) {
-                    logger.info("File Item renamed to: {}", this.itemFile.getName());
-                }
+                tagsToBeRemoved.add(tag);
             }
         }
 
-        tags.removeAll(removedTags);
+        /* The tags are removed from the item */
+        tags.removeAll(tagsToBeRemoved);
 
         /* Tags are consolidated to the file */
         this.consolidateTags();
-        return removedTags.size();
+        return tagsToBeRemoved.size();
     }
 
     /**
@@ -218,9 +213,16 @@ public abstract class MediaItem implements IMediaItem {
     protected boolean consolidateTags() {
 
         /* The file name is built from zero, starting for retrieve the filename without any tags */
-        String finalName = tagUtils.removeTagsFromText(this.itemFile.getName());
+        String finalName = tagUtils.removeTags(this.itemFile.getName()).trim();
         finalName = tagUtils.appendTags(finalName, tags);
 
-        return this.itemFile.renameTo(new File(finalName));
+        String pathname = itemFile.getParent() + "/" + finalName;
+        File dest = new File(pathname);
+
+
+        boolean moved = this.itemFile.renameTo(dest);
+        if (moved) logger.info("Moved!");
+        else logger.error("NOT Moved!");
+        return moved;
     }
 }

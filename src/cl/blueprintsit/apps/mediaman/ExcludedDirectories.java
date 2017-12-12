@@ -18,7 +18,11 @@ public class ExcludedDirectories implements FileFilter {
                 extension.contains("Spotlight-") ||
                 extension.contains("TemporaryItems") ||
                 extension.contains("Trashes") ||
-                extension.contains("fseventsd"));
+                extension.contains("fseventsd") ||
+                extension.contains("savedSearch") ||
+                f.getName().equalsIgnoreCase("temp") ||
+                f.getName().equalsIgnoreCase("VolumeIcon.icns") ||
+                f.getName().startsWith("_"));
 
     }
 }

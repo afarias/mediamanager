@@ -2,17 +2,12 @@ package cl.blueprintsit.apps.mediaman;
 
 import cl.blueprintsit.apps.mediaman.analyser.DateConsolidator;
 import cl.blueprintsit.apps.mediaman.analyser.TagCorrecter;
-import cl.blueprintsit.apps.mediaman.analyser.YearCorrecter;
 import cl.blueprintsit.apps.mediaman.analyser.fixers.ToBeSeenConsolidator;
 import cl.blueprintsit.apps.mediaman.mediaitem.MediaItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.List;
-
-import static cl.blueprintsit.apps.mediaman.Ranking.NONE;
-import static cl.blueprintsit.apps.mediaman.mediaitem.MediaFactory.parseRanking;
 
 public class MediaManager implements IMediaManager {
 
@@ -28,6 +23,13 @@ public class MediaManager implements IMediaManager {
         logger.info("The number of items whose date was consolidated is {}", mediaItemsModified.size());
     }
 
+    /**
+     * This method is where the visitors are applyed.
+     *
+     * @param mediaITem The library to be managed with 2C.
+     *
+     * @return The number of children visited.
+     */
     @Override
     public int consolidateToBeSeen(MediaItem mediaITem) {
         return mediaITem.visit(new ToBeSeenConsolidator());

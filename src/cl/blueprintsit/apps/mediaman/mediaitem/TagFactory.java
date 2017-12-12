@@ -27,7 +27,7 @@ public class TagFactory {
     public void createTags(MediaItem mediaItem) {
 
         String name = mediaItem.getItemFile().getName();
-        List<Tag> tags = new TagUtils(initDelimiter, endDelimiter).extractTagsFromLine(name);
+        List<Tag> tags = new TagUtils(initDelimiter, endDelimiter).extractTags(name);
 
         /* Now, tags are typed if recognized */
         for (Tag tag : tags) {

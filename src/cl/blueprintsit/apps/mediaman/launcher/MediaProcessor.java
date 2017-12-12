@@ -24,17 +24,15 @@ public class MediaProcessor extends JPanel {
 
         /* The library is created */
         TagUtils tagUtils = new TagUtils("[", "]");
-        MediaItem library = new MediaFactory(tagUtils).createMedia(new File("/Volumes/Andres HD"), tagUtils);
+        MediaItem library = new MediaFactory(tagUtils).createMedia(new File("/Volumes/Andres HD/"), tagUtils);
 
         /* Let's consolidate the dates */
         MediaManager manager = new MediaManager();
         new DateConsolidator().consolidateDates(library, true);
 
         /* Modificar el nombre de los items para ver si deben ser vistos ("[2C]") */
-        //manager.consolidateToBeSeen(library);
-
         manager.fixTags(library);
-
+        manager.consolidateToBeSeen(library);
     }
 
     /**

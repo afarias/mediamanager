@@ -21,9 +21,11 @@ public class ToBeSeenConsolidator implements IMediaVisitor {
     private static final Logger logger = LoggerFactory.getLogger(MediaItem.class);
 
     /**
+     * When visiting a media container, the folder name is analysed for the "2C" tag. If it does contain it, then it is
+     * removed, because containers should not have the tag.
      * The media container do not have the "2C" tag, so it only makes fix on its children.
      *
-     * @param mediaContainer The media container.
+     * @param mediaContainer The media container to be analysed.
      *
      * @return The number of children fixed.
      */
@@ -47,7 +49,9 @@ public class ToBeSeenConsolidator implements IMediaVisitor {
 
 
     /**
-     * This method is responsible for modifying the media item if it should be marked to be seen.
+     * This method is responsible for modifying the media item if it should be marked to be seen. A film may have
+     * scenes
+     * so, before processing this film, its children are to be processed first.
      *
      * @param mediaFilm The media film to be verified for the 2C tag.
      *
@@ -56,8 +60,11 @@ public class ToBeSeenConsolidator implements IMediaVisitor {
     @Override
     public int visit(MediaFilm mediaFilm) {
 
-        /* Are we dealing with a folder or a file? */
+        /* First is to check the children tags [2C] */
         int count = 0;
+        for (MediaItem child : mediaFilm.getChildrenMediaItems()) {
+            count += child.visit(this);
+        }
 
         /* If the tag IS THERE then it is removed */
         if (parseRanking(mediaFilm).equals(NONE)) {
@@ -71,14 +78,16 @@ public class ToBeSeenConsolidator implements IMediaVisitor {
             }
         }
 
-        /* Recursion for the children... */
-        for (MediaItem child : mediaFilm.getChildrenMediaItems()) {
-            count += child.visit(this);
-        }
-
         return count;
     }
 
+    /**
+     * TOOD: complete this method.
+     *
+     * @param sceneFile A scene file to be scanned.
+     *
+     * @return The number of changes performed media scenes processed.
+     */
     @Override
     public int visit(MediaSceneFile sceneFile) {
         return 0;

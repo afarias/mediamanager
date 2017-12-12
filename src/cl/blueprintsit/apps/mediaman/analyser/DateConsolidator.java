@@ -36,11 +36,13 @@ public class DateConsolidator {
         /* The date time is obtained. If there is not, there is nothing to do */
         if (mediaItem.containsTag("date")) {
             Tag dateTag = mediaItem.getTag("date");
+            logger.info("DATE VALUE = {}", dateTag);
             Date dateItem = DateUtils.format(dateTag.getValue());
 
             /* Checked if the consolidation is necessary */
             File itemFile = mediaItem.getItemFile();
             Date fileDate = new Date(itemFile.lastModified());
+
             if (!almostEquals(fileDate, dateItem)) {
                 boolean modified = itemFile.setLastModified(dateItem.getTime());
                 logger.info("Item " + mediaItem.toString() + ": Last modified date set to " + dateItem + "(" + modified + ")");
@@ -71,6 +73,10 @@ public class DateConsolidator {
      * @return <code>true</code> if they are almost equals, and <code>false</code> if they are not.
      */
     private boolean almostEquals(Date date1, Date date2) {
+
+        if (date1 == null || date2 == null){
+            throw new IllegalArgumentException("The dates are not to be null: " + date1 + "/" + date2);
+        }
 
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);

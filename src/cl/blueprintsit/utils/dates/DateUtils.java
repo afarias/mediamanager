@@ -96,7 +96,7 @@ public class DateUtils {
         try {
             parse = sdf.parse(dateString);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("No se pudo parsear la fecha");
         }
 
         return parse;

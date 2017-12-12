@@ -11,35 +11,62 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
+ * This class implements the different sanity operations on the library.
+ *
  * @author Andrés Farías on 6/11/17.
  */
 public class TagCorrecter implements IMediaVisitor {
 
+    /** The class logger */
     private static final Logger logger = LoggerFactory.getLogger(YearCorrecter.class);
 
     @Override
     public int visit(MediaContainer mediaContainer) {
+        return removeEmptyTagsVisitor(mediaContainer);
+    }
 
-        int counter = 0;
-        if (mediaContainer.getItemFile().getName().contains("[]")) {
-            mediaContainer.removeTagsWithValue("");
-        }
+    /**
+     * This method is responsible for correcting the empty tags from folders.
+     * @param media The item whose empty tags are to be removed.
+     * @return The number of removed tags.
+     */
+    private int removeEmptyTagsVisitor(MediaItem media) {
+        int counter = removeEmptyTags(media);
 
-        for (MediaItem mediaItem : mediaContainer.getChildrenMediaItems()) {
+        /* Visiting the children */
+        for (MediaItem mediaItem : media.getChildrenMediaItems()) {
             mediaItem.visit(this);
         }
 
         return counter;
     }
 
+    /**
+     * This method is responsible for removing empty tags.
+     *
+     * @param item The container being visited whose tags are to be removed
+     *
+     * @return the total number of removed tags.
+     */
+    private int removeEmptyTags(MediaItem item) {
+
+        /* Empty tags are removed */
+        int counter = 0;
+        if (item.containsTagValue("")) {
+            counter += item.removeTagsWithValue("");
+            logger.debug("Empty tags removed from container {}", item);
+        }
+        return counter;
+    }
+
     @Override
     public int visit(MediaFilm mediaFilm) {
-        return 0;
+        return removeEmptyTagsVisitor(mediaFilm);
     }
 
     @Override
     public int visit(MediaSceneFile sceneFile) {
-        return 0;
+        return removeEmptyTagsVisitor(sceneFile);
     }
 
     private int correctDirectoriesAndChildren(MediaContainer mediaContainer, int counter) {

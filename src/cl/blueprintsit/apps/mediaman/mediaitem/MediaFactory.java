@@ -32,59 +32,65 @@ public class MediaFactory {
     }
 
     /**
-     * This method is responsible for creating an object that represents a file system library.
-     *
+     * This method is responsible for creating an object that represents a file system library of an specific type.
+     * This are the cases to be taken into account:
+     * <ul>
+     *     <li>No media files</li>
+     *     <li>Single media files</li>
+     *     <li>Scene folder: 1 media file & zero or more no video-files.</li>
+     *     <li>Movie folder: 1 media file & zero or more no video-files.</li>
+     *     <li>Container folder: nothing like before...</li>
+     * </ul>
      * @param mediaFile The path of the library's file system.
      *
      * @return An object representing the library.
      */
     public MediaItem createMedia(File mediaFile, TagUtils tagUtils) {
 
-
-        /* The library is created from its root folder and its basic data is set */
         MediaItem media;
+        List<MediaItem> mediaChildren;
 
         /* Cases are analysed: simpler case first: a single file */
-        List<MediaItem> mediaChildren;
         if (mediaFile.isFile()) {
-            MediaItem singleItem = createSingleFile(mediaFile, tagUtils);
-            logger.debug("Item created: {}", singleItem);
-            return singleItem;
+            media = createSingleFile(mediaFile, tagUtils);
+            tagFactory.createTags(media);
         }
 
         /* If it's not a single file it's a folder, and a further analysis is in order. */
         else {
 
+            /* First is to create (recursively) the children and then analyze them */
+
             mediaChildren = new ArrayList<>();
             File[] fileChildren = mediaFile.listFiles(new ExcludedDirectories());
             for (File mediaChild : fileChildren) {
 
-            /* The file is processed and a Media Item is obtained from it */
+                /* The file is processed and a Media Item is obtained from it */
                 MediaItem mediaItem = createMedia(mediaChild, tagUtils);
 
-            /* And added to a list for further analysis */
+                /* And added to a list for further analysis */
                 mediaChildren.add(mediaItem);
             }
 
+            /* In order to determine which kind of media it is, it is necessary to analyse all its contents.
+             * So far, the mediaFile can be:
+             *  - A Folder Media Container (General Folder): it contains only scenes and nothing else!
+             *  - A Film: contains only scenes folders and video (no Folder Container).
+             *  - A SceneFolder: contains only scenes.
+             */
+
+            /* First it's tested for being a scene */
+            if (isScene(mediaFile, mediaChildren)) {
+                media = new MediaSceneFolder(mediaFile, mediaChildren, tagUtils);
+            } else if (isFilm(mediaFile, mediaChildren)) {
+                media = new MediaFilm(mediaFile, mediaChildren, tagUtils);
+            } else {
+                media = new MediaContainer(mediaFile, mediaChildren, tagUtils);
+            }
+
+            logger.debug("Media item created: " + media + " of type " + media.getType());
         }
 
-        /* In order to determine which kind of media it is, it is necessary to analyse all its contents.
-         * So far, the mediaFile can be:
-         *  - A Folder Media Container (General Folder): it contains only scenes and nothing else!
-         *  - A Film: contains only scenes folders and video (no Folder Container).
-         *  - A SceneFolder: contains only scenes.
-         */
-
-        /* First it's tested for being a scene */
-        if (isScene(mediaFile, mediaChildren)) {
-            media = new MediaSceneFolder(mediaFile, mediaChildren, tagUtils);
-        } else if (isFilm(mediaFile, mediaChildren)) {
-            media = new MediaFilm(mediaFile, mediaChildren, tagUtils);
-        } else {
-            media = new MediaContainer(mediaFile, mediaChildren, tagUtils);
-        }
-
-        logger.debug("Media item created: " + media + " of type " + media.getType());
         tagFactory.createTags(media);
         return media;
     }
