@@ -160,23 +160,28 @@ public abstract class MediaItem implements IMediaItem {
         return this.tags.add(tag);
     }
 
-    /**
-     * This method is responsible for determining if a given tag is present on the item.
-     *
-     * @param tagValue The tag value to be searched.
-     *
-     * @return <code>true</code> if the tag is in the item and <code>false</code> otherwise.
-     */
-    public boolean containsTagValue(String tagValue) {
+    @Override
+    public boolean containsTagValue(String tagValue, Boolean sensitiveCase) {
 
         for (Tag tag : tags) {
             String value = tag.getValue();
-            if (value != null && value.equals(tagValue)) {
-                return true;
+            if (sensitiveCase) {
+                if (value != null && value.equals(tagValue)) {
+                    return true;
+                }
+            } else {
+                if (value != null && value.equalsIgnoreCase(tagValue)) {
+                    return true;
+                }
             }
         }
 
         return false;
+    }
+
+    @Override
+    public boolean containsTag(Tag aTag, boolean sensitiveCase) {
+        return this.containsTagValue(aTag.getValue(), sensitiveCase);
     }
 
     /**
@@ -210,19 +215,36 @@ public abstract class MediaItem implements IMediaItem {
      *
      * @return <code>true</code> if the item was consolidated and false otherwise.
      */
-    protected boolean consolidateTags() {
+    public boolean consolidateTags() {
 
         /* The file name is built from zero, starting for retrieve the filename without any tags */
         String finalName = tagUtils.removeTags(this.itemFile.getName()).trim();
         finalName = tagUtils.appendTags(finalName, tags);
 
         String pathname = itemFile.getParent() + "/" + finalName;
-        File dest = new File(pathname);
+        boolean moved = this.itemFile.renameTo(new File(pathname));
 
-
-        boolean moved = this.itemFile.renameTo(dest);
-        if (moved) logger.info("Moved!");
-        else logger.error("NOT Moved!");
+        if (moved) {
+            logger.info("File moved to {}", this.itemFile);
+        } else {
+            logger.error("File {} was not renamed!", this.itemFile);
+        }
         return moved;
+    }
+
+    @Override
+    public boolean isToBeSeen() {
+        for (MediaItem mediaItem : this.getChildrenMediaItems()) {
+            if (!mediaItem.hasRanking()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean hasRanking() {
+        return !this.getRanking().equals(NONE);
     }
 }

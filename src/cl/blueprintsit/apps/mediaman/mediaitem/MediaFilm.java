@@ -31,4 +31,5 @@ public class MediaFilm extends MediaItem {
     public int visit(IMediaVisitor mediaVisitor) {
         return mediaVisitor.visit(this);
     }
+
 }

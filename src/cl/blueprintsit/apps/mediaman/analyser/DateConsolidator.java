@@ -36,7 +36,7 @@ public class DateConsolidator {
         /* The date time is obtained. If there is not, there is nothing to do */
         if (mediaItem.containsTag("date")) {
             Tag dateTag = mediaItem.getTag("date");
-            logger.info("DATE VALUE = {}", dateTag);
+            logger.debug("DATE VALUE = {}", dateTag);
             Date dateItem = DateUtils.format(dateTag.getValue());
 
             /* Checked if the consolidation is necessary */

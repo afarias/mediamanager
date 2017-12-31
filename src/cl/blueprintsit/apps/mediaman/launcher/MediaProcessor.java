@@ -25,6 +25,7 @@ public class MediaProcessor extends JPanel {
         /* The library is created */
         TagUtils tagUtils = new TagUtils("[", "]");
         MediaItem library = new MediaFactory(tagUtils).createMedia(new File("/Volumes/Andres HD/"), tagUtils);
+        logger.info("Media Processor Started!");
 
         /* Let's consolidate the dates */
         MediaManager manager = new MediaManager();

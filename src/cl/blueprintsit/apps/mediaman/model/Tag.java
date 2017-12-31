@@ -8,6 +8,8 @@ package cl.blueprintsit.apps.mediaman.model;
  */
 public class Tag {
 
+    public static final Tag TO_BE_SEEN = new Tag("2C");
+
     /** The Tag's value */
     private String value;
 

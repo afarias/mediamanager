@@ -18,7 +18,7 @@ import java.io.File;
 public class TagCorrecter implements IMediaVisitor {
 
     /** The class logger */
-    private static final Logger logger = LoggerFactory.getLogger(YearCorrecter.class);
+    private static final Logger logger = LoggerFactory.getLogger(TagCorrecter.class);
 
     @Override
     public int visit(MediaContainer mediaContainer) {
@@ -35,7 +35,7 @@ public class TagCorrecter implements IMediaVisitor {
 
         /* Visiting the children */
         for (MediaItem mediaItem : media.getChildrenMediaItems()) {
-            mediaItem.visit(this);
+            counter += mediaItem.visit(this);
         }
 
         return counter;
@@ -52,9 +52,9 @@ public class TagCorrecter implements IMediaVisitor {
 
         /* Empty tags are removed */
         int counter = 0;
-        if (item.containsTagValue("")) {
+        if (item.containsTagValue("", false)) {
             counter += item.removeTagsWithValue("");
-            logger.debug("Empty tags removed from container {}", item);
+            logger.info("{} empty tags removed from container {}", counter, item);
         }
         return counter;
     }
